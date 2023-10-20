@@ -67,12 +67,17 @@ void print_config(config_t config) {
     std::endl;
 }
 
+#define SET_PARAM(name) .name = config.name
+
 rrt_planner::rrt_params config_to_params(config_t config) {
   return (rrt_planner::rrt_params) {
-         .min_num_nodes = config.min_num_nodes,
-         .max_num_nodes = config.max_num_nodes,
-         .goal_tolerance = config.goal_tolerance,
-         .step = config.step,
-         .goal_bias = config.goal_bias,
+    SET_PARAM(min_num_nodes),
+    SET_PARAM(max_num_nodes),
+    SET_PARAM(goal_tolerance),
+    SET_PARAM(step),
+    SET_PARAM(goal_bias),
+    SET_PARAM(goal_bias_adapt),
+    SET_PARAM(goal_bias_adapt_rate),
+    SET_PARAM(goal_bias_adapt_reset),
   };
 }

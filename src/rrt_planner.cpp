@@ -3,6 +3,20 @@
 #include <rrt_planner/rrt_planner.h>
 #include <error.h>
 
+double max(double a, double b) {
+    if (a > b)
+        return a;
+    else
+        return b;
+}
+
+double min(double a, double b) {
+    if (a < b)
+        return a;
+    else
+        return b;
+}
+
 namespace rrt_planner {
 
     RRTPlanner::RRTPlanner(const pgm_t *map, 
@@ -26,6 +40,7 @@ namespace rrt_planner {
 
         double *p_rand, *p_new;
         Node nearest_node;
+        this->current_goal_bias = params_.goal_bias;
 
         for (unsigned int k = 1; k <= params_.max_num_nodes; k++) {
 
@@ -36,7 +51,14 @@ namespace rrt_planner {
             if (!collision_dect_.obstacleBetween(nearest_node.pos, p_new)) {
                 createNewNode(p_new, nearest_node.node_id);
 
+                if (params_.goal_bias_adapt_reset) {
+                    this->current_goal_bias = params_.goal_bias;
+                } else {
+                    this->current_goal_bias = max(1, this->current_goal_bias + params_.goal_bias_adapt_rate);
+                }
+
             } else {
+                this->current_goal_bias = min(0, this->current_goal_bias - params_.goal_bias_adapt_rate);
                 continue;
             }
 
@@ -91,9 +113,9 @@ namespace rrt_planner {
 
         // goal_bias is used to interpolate between the random generated point and the goal point by goal_bias
 
-        rand_point_[0] = random_double_x.generate() * (1 - params_.goal_bias) + params_.goal_bias * goal_[0];
+        rand_point_[0] = random_double_x.generate() * (1 - this->current_goal_bias) + this->current_goal_bias * goal_[0];
 
-        rand_point_[1] = random_double_y.generate() * (1 - params_.goal_bias) + params_.goal_bias * goal_[1];
+        rand_point_[1] = random_double_y.generate() * (1 - this->current_goal_bias) + this->current_goal_bias * goal_[1];
 
         return rand_point_;
     }

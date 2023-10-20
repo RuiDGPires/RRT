@@ -12,6 +12,9 @@ namespace rrt_planner {
         double goal_tolerance;
         double step;
         double goal_bias;
+        bool   goal_bias_adapt;
+        double goal_bias_adapt_rate;
+        bool   goal_bias_adapt_reset;
     };
 
     struct Node {
