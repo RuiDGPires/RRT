@@ -4,7 +4,7 @@
   "step": 0.2,
   "min_num_nodes": 200,
   "max_num_nodes": 5000,
-  "goal_bias": 0.0,
+  "goal_bias": 0.9,
   "goal_bias_adapt": false,
 
   "initial_x": 6.8,

@@ -1,10 +1,10 @@
 {
   "description": 
-    "Default parameters with simple goal",
+    "Simple goal without minimum number of nodes",
   "map_file": "maps/map.pgm",
   "goal_tolerance": 0.2,
   "step": 0.2,
-  "min_num_nodes": 200,
+  "min_num_nodes": 0,
   "max_num_nodes": 5000,
   "goal_bias": 0.0,
 
