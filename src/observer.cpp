@@ -36,8 +36,12 @@ void RRTObserver::draw(const pgm_t *pgm) {
         pgm->worldToMap(current.pos[0], current.pos[1], mx, my);
         pgm->worldToMap(parent.pos[0], parent.pos[1], pmx, pmy);
 
-        if (SDL_RenderDrawLine(this->r, mx*this->zoom, my*this->zoom, pmx*this->zoom, pmy*this->zoom))
-            ERROR("error: %s", SDL_GetError());
+
+        // THIIICK
+        SDL_RenderDrawLine(this->r, mx*this->zoom, my*this->zoom, pmx*this->zoom, pmy*this->zoom);
+        SDL_RenderDrawLine(this->r, 1 + mx*this->zoom, my*this->zoom, 1+ pmx *this->zoom, pmy*this->zoom);
+        SDL_RenderDrawLine(this->r, mx*this->zoom, 1 + my*this->zoom, pmx *this->zoom, 1 + pmy*this->zoom);
+        SDL_RenderDrawLine(this->r, 1 + mx*this->zoom, 1 + my*this->zoom, 1+ pmx *this->zoom, 1 + pmy*this->zoom);
 
         sdl_circle(this->r, mx*this->zoom, my*this->zoom, 2); 
         current = parent;

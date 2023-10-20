@@ -6,6 +6,15 @@
 #include <error.h>
 #include <observer.h>
 #include <rrt_planner/rrt_planner.h>
+#include <sys/time.h>
+
+long long current_time() {
+    struct timeval te;
+    gettimeofday(&te, NULL); // get current time
+    long long milliseconds = te.tv_sec*1000LL + te.tv_usec/1000; // calculate milliseconds
+    // printf("milliseconds: %lld\n", milliseconds);
+    return milliseconds;
+}
 
 #define WIDTH 640
 #define HEIGHT 480
@@ -97,12 +106,14 @@ int main(int argc, char* argv[])
 
   bool path_found = false;
 
+  auto initial_time = current_time();
+
   while (running)
   {
     if (!path_found) {
       path_found = planner.planPath();
       if (path_found) {
-        SUCCESS("Path found!");
+        SUCCESS("%f s", (double) (current_time() - initial_time) / 1000.0);
       }
     }
 
@@ -121,6 +132,7 @@ int main(int argc, char* argv[])
               break;
             case SDL_SCANCODE_R:
               path_found = false; 
+              initial_time = current_time();
               break;
             default:
               break;
@@ -138,13 +150,13 @@ int main(int argc, char* argv[])
     // DRAW STARTING POINT
     unsigned mx, my;
     pgm.worldToMap(config.initial_x, config.initial_y, mx, my);
-    SDL_SetRenderDrawColor(renderer, 20, 20, 255, 255);
+    SDL_SetRenderDrawColor(renderer, 20, 200, 155, 255);
     sdl_circle(renderer, mx*ZOOM, my*ZOOM, 6);
 
 
     // DRAW GOAL
     pgm.worldToMap(config.goal_x, config.goal_y, mx, my);
-    SDL_SetRenderDrawColor(renderer, 100, 10, 100, 255);
+    SDL_SetRenderDrawColor(renderer, 200, 10, 120, 255);
     sdl_circle(renderer, mx*ZOOM, my*ZOOM, ZOOM * config.goal_tolerance / RESOLUTION, false);
 
     observer.draw(&pgm);

@@ -9,5 +9,6 @@
 #define KCYN  "\x1B[36m"
 #define KWHT  "\x1B[37m"
 
-#define ERROR(...) {fprintf(stderr, KRED); fprintf(stderr, __VA_ARGS__); fprintf(stderr, KNRM "\n");}
-#define SUCCESS(...) {fprintf(stdout, KGRN); fprintf(stderr, __VA_ARGS__); fprintf(stderr, KNRM "\n");}
+#define ERROR(...) {fprintf(stderr, "%s[ERROR] ", KRED); fprintf(stderr, __VA_ARGS__); fprintf(stderr, KNRM "\n");}
+#define WARN(...) {fprintf(stdout,"%s[WARN] ", KYEL); fprintf(stderr, __VA_ARGS__); fprintf(stderr, KNRM "\n"); fflush(stdout);}
+#define SUCCESS(...) {fprintf(stdout, KGRN); fprintf(stderr, __VA_ARGS__); fprintf(stderr, KNRM "\n"); fflush(stdout);}
