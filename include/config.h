@@ -2,6 +2,7 @@
 #include <rrt_planner/utils.h>
 
 typedef struct {
+    std::string map_file;
     double goal_tolerance;
     double step;
     unsigned int min_num_nodes;

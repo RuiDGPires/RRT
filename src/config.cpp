@@ -8,6 +8,7 @@ config_t get_config(const std::string filename) {
   config_t config;
   json json_config = json::parse(std::ifstream(filename));
 
+  json_config.at("map_file").get_to(config.map_file);
   json_config.at("goal_tolerance").get_to(config.goal_tolerance);
   json_config.at("step").get_to(config.step);
   json_config.at("min_num_nodes").get_to(config.min_num_nodes);

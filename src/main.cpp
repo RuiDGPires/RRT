@@ -23,24 +23,17 @@ long long current_time() {
 
 int main(int argc, char* argv[])
 {
-  if (argc != 2) {
-      std::cerr << "Usage: " << argv[0] << " <input.pgm> [<config.json>]" << std::endl;
-      return 1;
-  }
-
-  const std::string filename = argv[1];
-
   std::string config_name;
 
-  if (argc != 3) {
-    config_name = "param/default.json";
+  if (argc != 2) {
+    config_name = "param/default-1.json";
   } else {
-    config_name = argv[2];
+    config_name = argv[1];
   }
 
   config_t config = get_config(config_name);
 
-  const pgm_t pgm = parsePGM(filename);
+  const pgm_t pgm = parsePGM(config.map_file);
 
   std::vector<unsigned int> pixels = pgm.pixels;
   const int width = pgm.width;
@@ -113,7 +106,7 @@ int main(int argc, char* argv[])
     if (!path_found) {
       path_found = planner.planPath();
       if (path_found) {
-        SUCCESS("%f s", (double) (current_time() - initial_time) / 1000.0);
+        SUCCESS("%f", (double) (current_time() - initial_time) / 1000.0);
       }
     }
 
