@@ -1,32 +1,70 @@
+#include <iostream>
 #include <json.hpp>
 #include <fstream>
 #include <config.h>
+#include <error.h>
 
 using json = nlohmann::json;
+
+#define OPT_PARAM(name, default_) { \
+  if (json_config.contains(#name)) \
+    json_config.at(#name).get_to(config.name); \
+  else \
+    config.name = default_; \
+}
+
+
+#define PARAM(name) { \
+  if (json_config.contains(#name)) \
+    json_config.at(#name).get_to(config.name); \
+  else {\
+    ERROR("Parameter missing: %s", #name); exit(0); \
+  } \
+}
+
+
 
 config_t get_config(const std::string filename) {
   config_t config;
   json json_config = json::parse(std::ifstream(filename));
 
-  json_config.at("map_file").get_to(config.map_file);
-  json_config.at("goal_tolerance").get_to(config.goal_tolerance);
-  json_config.at("step").get_to(config.step);
-  json_config.at("min_num_nodes").get_to(config.min_num_nodes);
-  json_config.at("max_num_nodes").get_to(config.max_num_nodes);
-  json_config.at("goal_bias").get_to(config.goal_bias);
-  if (json_config.contains("goal_bias_adapt"))
-    json_config.at("goal_bias_adapt").get_to(config.goal_bias_adapt);
-  else
-    config.goal_bias_adapt = false;
+  PARAM(map_file);
+  PARAM(goal_tolerance);
+  PARAM(step);
+  OPT_PARAM(min_num_nodes, 0);
+  PARAM(max_num_nodes);
+  PARAM(goal_bias);
+  OPT_PARAM(goal_bias_adapt, false);
+  OPT_PARAM(goal_bias_adapt_rate, 0.0);
+  OPT_PARAM(goal_bias_adapt_reset, false);
 
-  json_config.at("initial_x").get_to(config.initial_x);
-  json_config.at("initial_y").get_to(config.initial_y);
+  PARAM(initial_x);
+  PARAM(initial_y);
 
-  json_config.at("goal_x").get_to(config.goal_x);
-  json_config.at("goal_y").get_to(config.goal_y);
+  PARAM(goal_x);
+  PARAM(goal_y);
 
 
   return config;
+}
+
+void print_config(config_t config) {
+    std::cout << "Config:\n  " << config.map_file << "\n  " <<
+    config.goal_tolerance << "\n  " <<
+    config.step << "\n  " <<
+    config.min_num_nodes << "\n  " <<
+    config.max_num_nodes << "\n  " <<
+    config.goal_bias << "\n  " <<
+    config.goal_bias_adapt << "\n  " <<
+    config.goal_bias_adapt_rate << "\n  " <<
+    config.goal_bias_adapt_reset << "\n  " <<
+
+    config.initial_x << "\n  " <<
+    config.initial_y << "\n  " <<
+
+    config.goal_x << "\n  " <<
+    config.goal_y << "\n" << 
+    std::endl;
 }
 
 rrt_planner::rrt_params config_to_params(config_t config) {

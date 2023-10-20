@@ -32,6 +32,7 @@ int main(int argc, char* argv[])
   }
 
   config_t config = get_config(config_name);
+  print_config(config);
 
   const pgm_t pgm = parsePGM(config.map_file);
 
@@ -124,8 +125,10 @@ int main(int argc, char* argv[])
             case SDL_SCANCODE_SPACE:
               break;
             case SDL_SCANCODE_R:
-              path_found = false; 
-              initial_time = current_time();
+              if (path_found) {
+                path_found = false; 
+                initial_time = current_time();
+              }
               break;
             default:
               break;
