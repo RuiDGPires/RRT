@@ -5,6 +5,7 @@
   "min_num_nodes": 200,
   "max_num_nodes": 5000,
   "goal_bias": 0.0,
+  "goal_bias_adapt": false,
 
   "initial_x": 6.0,
   "initial_y": 7.0,

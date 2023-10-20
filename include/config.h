@@ -8,6 +8,7 @@ typedef struct {
     unsigned int min_num_nodes;
     unsigned int max_num_nodes;
     double goal_bias;
+    bool goal_bias_adapt;
 
     double initial_x, initial_y;
     double goal_x, goal_y;
