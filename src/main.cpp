@@ -1,0 +1,161 @@
+#include <iostream>
+#include <pgm.h>
+#include <SDL2/SDL.h>
+#include <draw.h>
+#include <config.h>
+#include <error.h>
+#include <observer.h>
+#include <rrt_planner/rrt_planner.h>
+
+#define WIDTH 640
+#define HEIGHT 480
+#define FPS 30
+#define ZOOM 3
+
+int main(int argc, char* argv[])
+{
+  if (argc != 2) {
+      std::cerr << "Usage: " << argv[0] << " <input.pgm> [<config.json>]" << std::endl;
+      return 1;
+  }
+
+  const std::string filename = argv[1];
+
+  std::string config_name;
+
+  if (argc != 3) {
+    config_name = "param/default.json";
+  } else {
+    config_name = argv[2];
+  }
+
+  config_t config = get_config(config_name);
+
+  const pgm_t pgm = parsePGM(filename);
+
+  std::vector<unsigned int> pixels = pgm.pixels;
+  const int width = pgm.width;
+  const int height = pgm.height; 
+
+  /* Initializes the timer, audio, video, joystick,
+  haptic, gamecontroller and events subsystems */
+  if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
+  {
+    printf("Error initializing SDL: %s\n", SDL_GetError());
+    return 0;
+  }
+  /* Create a window */
+  SDL_Window* window = SDL_CreateWindow("View", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width*ZOOM, height*ZOOM, SDL_WINDOW_SHOWN);
+
+  if (!window)
+  {
+    printf("Error creating window: %s\n", SDL_GetError());
+    SDL_Quit();
+    return 0;
+  }
+  /* Create a renderer */
+  Uint32 render_flags = SDL_RENDERER_ACCELERATED;
+  SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, render_flags);
+
+
+  if (!renderer)
+  {
+    printf("Error creating renderer: %s\n", SDL_GetError());
+    SDL_DestroyWindow(window);
+    SDL_Quit();
+    return 0;
+  }
+
+  SDL_Texture* texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STATIC, width, height);
+  if (!texture) {
+    std::cerr << "Texture creation failed: " << SDL_GetError() << std::endl;
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
+    return 1;
+  }
+
+  /* Main loop */
+  bool running = true;
+  SDL_Event event;
+
+  /* Clear screen */
+  SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+  SDL_RenderClear(renderer);
+
+
+  /* RRT Planner */
+
+  double start[2] = {config.initial_x, config.initial_y}, goal[2] = {config.goal_x, config.goal_y};
+
+  const rrt_planner::rrt_params params = config_to_params(config);
+  rrt_planner::RRTPlanner planner(&pgm, params);
+
+  planner.setStart(start);
+  planner.setGoal(goal);
+  RRTObserver observer(renderer, &planner, ZOOM);
+
+  bool path_found = false;
+
+  while (running)
+  {
+    if (!path_found) {
+      path_found = planner.planPath();
+      if (path_found) {
+        SUCCESS("Path found!");
+      }
+    }
+
+    /* Process events */
+    while (SDL_PollEvent(&event))
+    {
+      switch (event.type)
+      {
+        case SDL_QUIT:
+          running = false;
+          break;
+        case SDL_KEYDOWN:
+          switch (event.key.keysym.scancode)
+          {
+            case SDL_SCANCODE_SPACE:
+              break;
+            case SDL_SCANCODE_R:
+              path_found = false; 
+              break;
+            default:
+              break;
+          }
+          break;
+        default:
+          break;
+      }
+    }
+
+    SDL_UpdateTexture(texture, nullptr, pixels.data(), width * sizeof(int));
+    SDL_Rect dest_rect = {0, 0, width * ZOOM, height * ZOOM};
+    SDL_RenderCopy(renderer, texture, NULL, &dest_rect);
+
+    // DRAW STARTING POINT
+    unsigned mx, my;
+    pgm.worldToMap(config.initial_x, config.initial_y, mx, my);
+    SDL_SetRenderDrawColor(renderer, 20, 20, 255, 255);
+    sdl_circle(renderer, mx*ZOOM, my*ZOOM, 6);
+
+
+    // DRAW GOAL
+    pgm.worldToMap(config.goal_x, config.goal_y, mx, my);
+    SDL_SetRenderDrawColor(renderer, 100, 10, 100, 255);
+    sdl_circle(renderer, mx*ZOOM, my*ZOOM, ZOOM * config.goal_tolerance / RESOLUTION, false);
+
+    observer.draw(&pgm);
+
+    SDL_RenderPresent(renderer);
+    SDL_Delay(1000/FPS);
+  }
+
+  SDL_DestroyTexture(texture);
+  SDL_DestroyRenderer(renderer);
+  SDL_DestroyWindow(window);
+  SDL_Quit();
+  return 0;
+}
