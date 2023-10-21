@@ -37,6 +37,9 @@ config_t get_config(const std::string filename) {
   OPT_PARAM(goal_bias_adapt, false);
   OPT_PARAM(goal_bias_adapt_rate, 0.0);
   OPT_PARAM(goal_bias_adapt_reset, false);
+  OPT_PARAM(settle_for_best, false);
+  OPT_PARAM(settle_for_best_tries, 0);
+  OPT_PARAM(settle_for_best_keep_best, false);
 
   PARAM(initial_x);
   PARAM(initial_y);
@@ -48,22 +51,27 @@ config_t get_config(const std::string filename) {
   return config;
 }
 
+#define STREAM_PARAM(param) #param << ": " << config.param << "\n  " <<
+
 void print_config(config_t config) {
-    std::cout << "Config:\n  " << config.map_file << "\n  " <<
-    config.goal_tolerance << "\n  " <<
-    config.step << "\n  " <<
-    config.min_num_nodes << "\n  " <<
-    config.max_num_nodes << "\n  " <<
-    config.goal_bias << "\n  " <<
-    config.goal_bias_adapt << "\n  " <<
-    config.goal_bias_adapt_rate << "\n  " <<
-    config.goal_bias_adapt_reset << "\n  " <<
+    std::cout << "Config:\n  " <<
+    STREAM_PARAM(map_file)
+    STREAM_PARAM(goal_tolerance)
+    STREAM_PARAM(step)
+    STREAM_PARAM(min_num_nodes)
+    STREAM_PARAM(max_num_nodes)
+    STREAM_PARAM(goal_bias)
+    STREAM_PARAM(goal_bias_adapt)
+    STREAM_PARAM(goal_bias_adapt_rate)
+    STREAM_PARAM(goal_bias_adapt_reset)
+    STREAM_PARAM(settle_for_best)
+    STREAM_PARAM(settle_for_best_tries)
+    STREAM_PARAM(settle_for_best_keep_best)
 
-    config.initial_x << "\n  " <<
-    config.initial_y << "\n  " <<
-
-    config.goal_x << "\n  " <<
-    config.goal_y << "\n" << 
+    STREAM_PARAM(initial_x)
+    STREAM_PARAM(initial_y)
+    STREAM_PARAM(goal_x)
+    STREAM_PARAM(goal_y)
     std::endl;
 }
 
@@ -79,5 +87,8 @@ rrt_planner::rrt_params config_to_params(config_t config) {
     SET_PARAM(goal_bias_adapt),
     SET_PARAM(goal_bias_adapt_rate),
     SET_PARAM(goal_bias_adapt_reset),
+    SET_PARAM(settle_for_best),
+    SET_PARAM(settle_for_best_tries),
+    SET_PARAM(settle_for_best_keep_best),
   };
 }

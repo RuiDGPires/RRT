@@ -15,6 +15,9 @@ namespace rrt_planner {
         bool   goal_bias_adapt;
         double goal_bias_adapt_rate;
         bool   goal_bias_adapt_reset;
+        bool   settle_for_best;
+        unsigned settle_for_best_tries;
+        bool   settle_for_best_keep_best;
     };
 
     struct Node {
