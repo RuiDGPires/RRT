@@ -2,6 +2,7 @@
 #include <rrt_planner/utils.h>
 
 typedef struct {
+    std::string description;
     std::string map_file;
     double goal_tolerance;
     double step;

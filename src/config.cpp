@@ -28,6 +28,7 @@ config_t get_config(const std::string filename) {
   config_t config;
   json json_config = json::parse(std::ifstream(filename));
 
+  OPT_PARAM(description, "");
   PARAM(map_file);
   PARAM(goal_tolerance);
   PARAM(step);
@@ -47,14 +48,14 @@ config_t get_config(const std::string filename) {
   PARAM(goal_x);
   PARAM(goal_y);
 
-
   return config;
 }
 
-#define STREAM_PARAM(param) #param << ": " << config.param << "\n  " <<
+#define STREAM_PARAM(param) " - " << #param << ": " << config.param << "\n" <<
 
 void print_config(config_t config) {
-    std::cout << "Config:\n  " <<
+    std::cout << 
+    "\n [ " << config.description << " ]\n\n"
     STREAM_PARAM(map_file)
     STREAM_PARAM(goal_tolerance)
     STREAM_PARAM(step)
