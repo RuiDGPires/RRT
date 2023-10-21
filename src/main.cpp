@@ -21,6 +21,12 @@ long long current_time() {
 #define FPS 30
 #define ZOOM 3
 
+#define TRIES 10
+#define AUTO
+
+double times[TRIES];
+unsigned times_aux = 0;
+
 int main(int argc, char* argv[])
 {
   std::string config_name;
@@ -107,7 +113,20 @@ int main(int argc, char* argv[])
     if (!path_found) {
       path_found = planner.planPath();
       if (path_found) {
+#ifndef AUTO
         SUCCESS("%f", (double) (current_time() - initial_time) / 1000.0);
+#else
+        times[times_aux++] = (double) (current_time() - initial_time) / 1000.0;
+        if(times_aux == TRIES) {
+          double sum = 0;
+          for (int i = 0; i < TRIES; i++)
+            sum += times[i];
+          printf("%3f\n", sum / TRIES);
+          exit(0);
+        }
+        path_found = false; 
+        initial_time = current_time();
+#endif
       }
     }
 
