@@ -28,6 +28,7 @@ namespace rrt_planner {
         random_double_y.setRange(-map_height_, map_height_);
 
         nodes_.reserve(params_.max_num_nodes);
+        tolerance_sqrd = params_.goal_tolerance * params_.goal_tolerance;
     }
 
     bool RRTPlanner::planPath() {
@@ -66,7 +67,7 @@ namespace rrt_planner {
 
             if(k > params_.min_num_nodes) {
                 
-                if(computeDistance(p_new, goal_) <= params_.goal_tolerance){
+                if(computeDistanceSqrd(p_new, goal_) <= this->tolerance_sqrd){
 
                     this->path_found = true;
                     return true;
@@ -82,7 +83,7 @@ namespace rrt_planner {
         double min_dist = std::numeric_limits<double>::max();
 
         for (size_t i = 0; i < nodes_.size(); i++) {
-            double dist = computeDistance(point, nodes_[i].pos);
+            double dist = computeDistanceSqrd(point, nodes_[i].pos);
             if (dist < min_dist) {
                 min_dist = dist;
                 nearest_id = i;

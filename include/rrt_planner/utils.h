@@ -37,6 +37,11 @@ namespace rrt_planner {
         return std::hypot((y[1] - x[1]), (y[0] - x[0])); 
     }
 
+    inline double computeDistanceSqrd(const double *x, const double *y) {
+        double a = (y[1]-x[1]);
+        double b = (y[0]-x[0]);
+        return a*a + b*b;
+    }
 };
 
 #endif // _RTT_PLANNER_UTILS_H

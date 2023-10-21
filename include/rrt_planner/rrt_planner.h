@@ -85,6 +85,7 @@ namespace rrt_planner {
             bool path_found = false;
             double start_[2], goal_[2];
             private:
+                double tolerance_sqrd;
                 double current_goal_bias;
                 double rand_point_[2], candidate_point_[2];
                 double map_width_, map_height_;
