@@ -51,14 +51,16 @@ namespace rrt_planner {
             if (!collision_dect_.obstacleBetween(nearest_node.pos, p_new)) {
                 createNewNode(p_new, nearest_node.node_id);
 
-                if (params_.goal_bias_adapt_reset) {
-                    this->current_goal_bias = params_.goal_bias;
-                } else {
-                    this->current_goal_bias = max(1, this->current_goal_bias + params_.goal_bias_adapt_rate);
+                if  (params_.goal_bias_adapt) {
+                    if (params_.goal_bias_adapt_reset) {
+                        this->current_goal_bias = params_.goal_bias;
+                    } else {
+                        this->current_goal_bias = max(params_.goal_bias, this->current_goal_bias + params_.goal_bias_adapt_rate);
+                    }
                 }
-
             } else {
-                this->current_goal_bias = min(0, this->current_goal_bias - params_.goal_bias_adapt_rate);
+                if (params_.goal_bias_adapt)
+                    this->current_goal_bias = min(0, this->current_goal_bias - params_.goal_bias_adapt_rate);
                 continue;
             }
 
