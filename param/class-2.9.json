@@ -1,7 +1,7 @@
 {
   "description": 
-    "Best of goal_bias benchmark setting for best",
-  "map_file": "maps/map3.pgm",
+    "Best of goal_bias benchmark setting for best on new mao (thicker wall)",
+  "map_file": "maps/map4.pgm",
   "goal_tolerance": 0.2,
   "step": 0.2,
   "min_num_nodes": 0,

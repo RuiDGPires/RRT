@@ -35,6 +35,7 @@ namespace rrt_planner {
 
         // clear everything before planning
         nodes_.clear();
+        this->current_goal_bias = params_.goal_bias;
 
         // Start Node
         createNewNode(start_, -1);
@@ -42,6 +43,9 @@ namespace rrt_planner {
         double *p_rand, *p_new;
         Node nearest_node;
         this->current_goal_bias = params_.goal_bias;
+        this->best_node_dist_sqrd = std::numeric_limits<double>::max();
+        this->best_node = -1;
+        this->path_found = false;
 
         for (unsigned int k = 1; k <= params_.max_num_nodes; k++) {
 
@@ -66,14 +70,25 @@ namespace rrt_planner {
             }
 
             if(k > params_.min_num_nodes) {
-                
-                if(computeDistanceSqrd(p_new, goal_) <= this->tolerance_sqrd){
+                double dist_to_goal = computeDistanceSqrd(p_new, goal_);        
 
+                if(dist_to_goal <= this->tolerance_sqrd){
                     this->path_found = true;
+                    this->reached_goal = true;
                     return true;
+                } else if (dist_to_goal <= this->best_node_dist_sqrd && params_.settle_for_best) {
+                    this->best_node_dist_sqrd = dist_to_goal;
+                    this->best_node = nodes_.size() - 1;
                 }
             }
         } 
+
+        if (this->best_node != (unsigned) -1 && params_.settle_for_best) {
+            nodes_[nodes_.size() - 1] = nodes_[this->best_node];
+            this->path_found = true;
+            this->reached_goal = false;
+            return true; 
+        }
 
         return false;
     }
@@ -144,6 +159,12 @@ namespace rrt_planner {
         start_[0] = start[0];
         start_[1] = start[1];
 
+    }
+
+    void RRTPlanner::move() {
+        if (best_node == (unsigned) -1) return;
+
+        this->setStart(nodes_[best_node].pos);
     }
 
     void RRTPlanner::setGoal(double *goal) {

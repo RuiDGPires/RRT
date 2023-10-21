@@ -1,0 +1,17 @@
+{
+  "description": 
+    "Best simple, higher number of nodes",
+  "map_file": "maps/map2.pgm",
+  "goal_tolerance": 0.2,
+  "step": 0.2,
+  "min_num_nodes": 0,
+  "max_num_nodes": 10000,
+  "goal_bias": 0.5,
+  "goal_bias_adapt": false,
+
+  "initial_x": 6.8,
+  "initial_y": 7.5,
+
+  "goal_x": 5.8,
+  "goal_y": 2.8
+}

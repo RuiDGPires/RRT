@@ -105,6 +105,7 @@ int main(int argc, char* argv[])
   RRTObserver observer(renderer, &planner, ZOOM);
 
   bool path_found = false;
+  bool reached_goal = false;
 
   auto initial_time = current_time();
 
@@ -112,20 +113,34 @@ int main(int argc, char* argv[])
   {
     if (!path_found) {
       path_found = planner.planPath();
+      reached_goal = planner.reached_goal;
+
       if (path_found) {
+        if (reached_goal) {
 #ifndef AUTO
-        SUCCESS("%f", (double) (current_time() - initial_time) / 1000.0);
-#else
-        times[times_aux++] = (double) (current_time() - initial_time) / 1000.0;
-        if(times_aux == TRIES) {
-          double sum = 0;
-          for (int i = 0; i < TRIES; i++)
-            sum += times[i];
-          printf("%3f\n", sum / TRIES);
-          exit(0);
+          SUCCESS("%f", (double) (current_time() - initial_time) / 1000.0);
         }
-        path_found = false; 
-        initial_time = current_time();
+#else
+          times[times_aux++] = (double) (current_time() - initial_time) / 1000.0;
+          if(times_aux == TRIES) {
+            double sum = 0;
+            for (int i = 0; i < TRIES; i++) {
+              printf("%3f\n", times[i]);
+              sum += times[i];
+            }
+            printf("---\n");
+            printf("%3f\n", sum / TRIES);
+            exit(0);
+          }
+          path_found = false; 
+          reached_goal = false;
+          planner.setStart(start);
+          initial_time = current_time();
+      } else {
+          planner.move();
+          path_found = false; 
+          reached_goal = false;
+      }
 #endif
       }
     }
@@ -145,8 +160,14 @@ int main(int argc, char* argv[])
               break;
             case SDL_SCANCODE_R:
               if (path_found) {
+                if (!reached_goal) {
+                  planner.move();
+                } else {
+                  planner.setStart(start);
+                  initial_time = current_time();
+                }
                 path_found = false; 
-                initial_time = current_time();
+                reached_goal = false; 
               }
               break;
             default:
@@ -164,7 +185,7 @@ int main(int argc, char* argv[])
 
     // DRAW STARTING POINT
     unsigned mx, my;
-    pgm.worldToMap(config.initial_x, config.initial_y, mx, my);
+    pgm.worldToMap(planner.start_[0], planner.start_[1], mx, my);
     SDL_SetRenderDrawColor(renderer, 20, 200, 155, 255);
     sdl_circle(renderer, mx*ZOOM, my*ZOOM, 6);
 

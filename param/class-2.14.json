@@ -1,11 +1,11 @@
 {
   "description": 
-    "Best of goal_bias benchmark setting for best",
-  "map_file": "maps/map3.pgm",
+    "Setting for best higherererer number of nodes",
+  "map_file": "maps/map4.pgm",
   "goal_tolerance": 0.2,
   "step": 0.2,
   "min_num_nodes": 0,
-  "max_num_nodes": 2000,
+  "max_num_nodes": 50000,
   "goal_bias": 0.5,
   "settle_for_best": true,
   "settle_for_best_tries": 0,

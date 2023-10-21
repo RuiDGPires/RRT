@@ -64,6 +64,11 @@ namespace rrt_planner {
             void setStart(double *start);
 
             /**
+             * Moves the start position to the best node
+             */
+            void move();
+
+            /**
              * @brief   Sets the goal position for the planner
              * @param   start The goal position
              */
@@ -83,8 +88,13 @@ namespace rrt_planner {
 
             
             bool path_found = false;
+            bool reached_goal = false;
+
             double start_[2], goal_[2];
             private:
+                unsigned best_node;
+                double best_node_dist_sqrd;
+
                 double tolerance_sqrd;
                 double current_goal_bias;
                 double rand_point_[2], candidate_point_[2];
