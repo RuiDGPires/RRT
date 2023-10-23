@@ -1,0 +1,20 @@
+{
+  "description": 
+    "Best overall for tricky map",
+  "resolution": 0.025,
+  "map_file": "maps/map5.pgm",
+  "goal_tolerance": 0.2,
+  "step": 0.2,
+  "min_num_nodes": 0,
+  "max_num_nodes": 10000,
+  "goal_bias": 0.5,
+  "settle_for_best": true,
+  "settle_for_best_tries": 0,
+  "settle_for_best_keep_best": false,
+
+  "initial_x": 2.9,
+  "initial_y": 2.5,
+
+  "goal_x": 2,
+  "goal_y": 2.5
+}

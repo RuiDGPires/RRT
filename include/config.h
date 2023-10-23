@@ -1,14 +1,17 @@
+#pragma once
 #include <string>
 #include <rrt_planner/utils.h>
 
 typedef struct {
     std::string description;
     std::string map_file;
+    double resolution;
     double goal_tolerance;
     double step;
     unsigned int min_num_nodes;
     unsigned int max_num_nodes;
     double goal_bias;
+    double goal_chance;
     bool goal_bias_adapt;
     double goal_bias_adapt_rate;
     bool goal_bias_adapt_reset;

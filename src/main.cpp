@@ -21,7 +21,7 @@ long long current_time() {
 #define FPS 30
 #define ZOOM 3
 
-#define TRIES 10
+#define TRIES 150
 #define AUTO
 
 double times[TRIES];
@@ -40,7 +40,7 @@ int main(int argc, char* argv[])
   config_t config = get_config(config_name);
   print_config(config);
 
-  const pgm_t pgm = parsePGM(config.map_file);
+  const pgm_t pgm = parsePGM(config);
 
   std::vector<unsigned int> pixels = pgm.pixels;
   const int width = pgm.width;
@@ -193,7 +193,7 @@ int main(int argc, char* argv[])
     // DRAW GOAL
     pgm.worldToMap(config.goal_x, config.goal_y, mx, my);
     SDL_SetRenderDrawColor(renderer, 200, 10, 120, 255);
-    sdl_circle(renderer, mx*ZOOM, my*ZOOM, ZOOM * config.goal_tolerance / RESOLUTION, false);
+    sdl_circle(renderer, mx*ZOOM, my*ZOOM, ZOOM * config.goal_tolerance / config.resolution, false);
 
     observer.draw(&pgm);
 

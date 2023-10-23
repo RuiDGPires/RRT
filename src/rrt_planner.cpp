@@ -46,6 +46,7 @@ namespace rrt_planner {
         this->best_node_dist_sqrd = std::numeric_limits<double>::max();
         this->best_node = -1;
         this->path_found = false;
+        this->tries++;
 
         for (unsigned int k = 1; k <= params_.max_num_nodes; k++) {
 
@@ -75,6 +76,7 @@ namespace rrt_planner {
                 if(dist_to_goal <= this->tolerance_sqrd){
                     this->path_found = true;
                     this->reached_goal = true;
+                    this->tries = 0;
                     return true;
                 } else if (dist_to_goal <= this->best_node_dist_sqrd && params_.settle_for_best) {
                     this->best_node_dist_sqrd = dist_to_goal;
@@ -83,10 +85,11 @@ namespace rrt_planner {
             }
         } 
 
-        if (this->best_node != (unsigned) -1 && params_.settle_for_best) {
+        if (this->best_node != (unsigned) -1 && params_.settle_for_best && this->tries >= params_.settle_for_best_tries) {
             nodes_[nodes_.size() - 1] = nodes_[this->best_node];
             this->path_found = true;
             this->reached_goal = false;
+            this->tries = 0;
             return true; 
         }
 
@@ -130,6 +133,14 @@ namespace rrt_planner {
     double* RRTPlanner::sampleRandomPoint() {
 
         // goal_bias is used to interpolate between the random generated point and the goal point by goal_bias
+        // goal_sample_thresh is used to take a sample of the goal point if n_samples surpasses it
+        
+        if ((int)++n_samples > params_.goal_sample_thresh && params_.goal_sample_thresh != -1) {
+            n_samples = 0;
+            rand_point_[0] = goal_[0];
+            rand_point_[1] = goal_[1];
+            return  rand_point_;
+        }
 
         rand_point_[0] = random_double_x.generate() * (1 - this->current_goal_bias) + this->current_goal_bias * goal_[0];
 

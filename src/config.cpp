@@ -30,11 +30,13 @@ config_t get_config(const std::string filename) {
 
   OPT_PARAM(description, "");
   PARAM(map_file);
+  OPT_PARAM(resolution, 0.05);
   PARAM(goal_tolerance);
   PARAM(step);
   OPT_PARAM(min_num_nodes, 0);
   PARAM(max_num_nodes);
   PARAM(goal_bias);
+  OPT_PARAM(goal_chance, 0.0);
   OPT_PARAM(goal_bias_adapt, false);
   OPT_PARAM(goal_bias_adapt_rate, 0.0);
   OPT_PARAM(goal_bias_adapt_reset, false);
@@ -57,11 +59,13 @@ void print_config(config_t config) {
     std::cout << 
     "\n [ " << config.description << " ]\n\n"
     STREAM_PARAM(map_file)
+    STREAM_PARAM(resolution)
     STREAM_PARAM(goal_tolerance)
     STREAM_PARAM(step)
     STREAM_PARAM(min_num_nodes)
     STREAM_PARAM(max_num_nodes)
     STREAM_PARAM(goal_bias)
+    STREAM_PARAM(goal_chance)
     STREAM_PARAM(goal_bias_adapt)
     STREAM_PARAM(goal_bias_adapt_rate)
     STREAM_PARAM(goal_bias_adapt_reset)
@@ -85,6 +89,7 @@ rrt_planner::rrt_params config_to_params(config_t config) {
     SET_PARAM(goal_tolerance),
     SET_PARAM(step),
     SET_PARAM(goal_bias),
+    .goal_sample_thresh = config.goal_chance == 0 ? -1: (int) (1.0 / config.goal_chance),
     SET_PARAM(goal_bias_adapt),
     SET_PARAM(goal_bias_adapt_rate),
     SET_PARAM(goal_bias_adapt_reset),

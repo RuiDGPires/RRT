@@ -1,10 +1,10 @@
 #pragma once
 #include <vector>
 #include <string>
-
-#define RESOLUTION 0.05
+#include <config.h>
 
 struct pgm_t {
+    double resolution;
     const int width, height;
     std::vector<unsigned int> pixels;
 
@@ -13,4 +13,4 @@ struct pgm_t {
     bool MapToWorld(unsigned mx, unsigned my, double &wx, double &wy) const ;
 };
 
-pgm_t parsePGM(const std::string& filename);
+pgm_t parsePGM(const config_t&);

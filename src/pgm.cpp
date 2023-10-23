@@ -10,8 +10,8 @@ int make_pixel(char c) {
 
 bool pgm_t::worldToMap(double wx, double wy, unsigned int &mx, unsigned int &my) const {
     
-    int tmp_mx = wx / RESOLUTION;
-    int tmp_my = wy / RESOLUTION;
+    int tmp_mx = wx / this->resolution;
+    int tmp_my = wy / this->resolution;
 
     if (tmp_mx >= this->width || tmp_my >= this->height || tmp_mx < 0 || tmp_my < 0) {
         //ERROR("Out of bounds: (%u, %u)", tmp_mx, tmp_my);
@@ -26,8 +26,8 @@ bool pgm_t::worldToMap(double wx, double wy, unsigned int &mx, unsigned int &my)
 
 bool pgm_t::MapToWorld(unsigned mx, unsigned my, double &wx, double &wy) const {
     
-    wx = mx * RESOLUTION;
-    wy = my * RESOLUTION;
+    wx = mx * this->resolution;
+    wy = my * this->resolution;
 
     return true;
 }
@@ -37,10 +37,10 @@ unsigned char pgm_t::getCost(unsigned int x, unsigned int y) const {
 }
 
 // Function to parse a PGM file and store pixel values in a vector
-pgm_t parsePGM(const std::string& filename) {
-    std::ifstream file(filename, std::ios::binary);
+pgm_t parsePGM(const config_t& config) {
+    std::ifstream file(config.map_file, std::ios::binary);
     if (!file.is_open()) {
-        std::cerr << "Error opening file: " << filename << std::endl;
+        std::cerr << "Error opening file: " << config.map_file << std::endl;
         exit(1);
     }
 
@@ -68,5 +68,5 @@ pgm_t parsePGM(const std::string& filename) {
         }
     }
 
-    return (pgm_t) {.width = width, .height = height, .pixels = pixels};
+    return (pgm_t) {.resolution = config.resolution, .width = width, .height = height, .pixels = pixels};
 }

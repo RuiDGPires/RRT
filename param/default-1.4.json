@@ -1,0 +1,17 @@
+{
+  "description": 
+    "Simple goal with goal chance",
+  "map_file": "maps/map.pgm",
+  "goal_tolerance": 0.2,
+  "step": 0.2,
+  "min_num_nodes": 0,
+  "max_num_nodes": 5000,
+  "goal_bias": 0.0,
+  "goal_chance": 0.25,
+
+  "initial_x": 10.0,
+  "initial_y": 10.0,
+
+  "goal_x": 9,
+  "goal_y": 10.0
+}

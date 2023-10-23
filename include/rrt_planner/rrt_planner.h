@@ -92,7 +92,9 @@ namespace rrt_planner {
 
             double start_[2], goal_[2];
             private:
+                unsigned n_samples = 0; // Aux variable to store how many samples have been taken since last goal sample
                 unsigned best_node;
+                unsigned tries = 0;
                 double best_node_dist_sqrd;
 
                 double tolerance_sqrd;
