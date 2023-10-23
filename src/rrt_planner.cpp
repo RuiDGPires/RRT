@@ -46,6 +46,7 @@ namespace rrt_planner {
         this->best_node_dist_sqrd = std::numeric_limits<double>::max();
         this->best_node = -1;
         this->path_found = false;
+        this->reached_goal = false;
         this->tries++;
 
         for (unsigned int k = 1; k <= params_.max_num_nodes; k++) {

@@ -21,7 +21,7 @@ long long current_time() {
 #define FPS 30
 #define ZOOM 3
 
-#define TRIES 150
+#define TRIES 50
 #define AUTO
 
 double times[TRIES];
