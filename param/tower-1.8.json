@@ -1,0 +1,21 @@
+{
+  "description": 
+    "Best overall in tower map",
+  "map_file": "maps/map6.pgm",
+  "resolution": 0.1,
+  "goal_tolerance": 0.2,
+  "step": 0.2,
+  "min_num_nodes": 0,
+  "max_num_nodes": 5000,
+  "goal_bias": 0.5,
+  "goal_chance": 0.25,
+  "settle_for_best": true,
+  "settle_for_best_tries": 3,
+  "goal_check": true,
+
+  "initial_x": 26,
+  "initial_y": 10,
+
+  "goal_x": 8.5,
+  "goal_y": 27.5
+}
