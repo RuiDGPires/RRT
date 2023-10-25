@@ -19,6 +19,8 @@ typedef struct {
     unsigned settle_for_best_tries;
     bool settle_for_best_keep_best;
 
+    bool goal_check; // Check if can reach goal
+
     double initial_x, initial_y;
     double goal_x, goal_y;
 } config_t;

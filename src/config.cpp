@@ -43,6 +43,7 @@ config_t get_config(const std::string filename) {
   OPT_PARAM(settle_for_best, false);
   OPT_PARAM(settle_for_best_tries, 0);
   OPT_PARAM(settle_for_best_keep_best, false);
+  OPT_PARAM(goal_check, false);
 
   PARAM(initial_x);
   PARAM(initial_y);
@@ -73,6 +74,8 @@ void print_config(config_t config) {
     STREAM_PARAM(settle_for_best_tries)
     STREAM_PARAM(settle_for_best_keep_best)
 
+    STREAM_PARAM(goal_check)
+
     STREAM_PARAM(initial_x)
     STREAM_PARAM(initial_y)
     STREAM_PARAM(goal_x)
@@ -96,5 +99,6 @@ rrt_planner::rrt_params config_to_params(config_t config) {
     SET_PARAM(settle_for_best),
     SET_PARAM(settle_for_best_tries),
     SET_PARAM(settle_for_best_keep_best),
+    SET_PARAM(goal_check),
   };
 }

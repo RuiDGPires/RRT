@@ -19,6 +19,7 @@ namespace rrt_planner {
         bool   settle_for_best;
         unsigned settle_for_best_tries;
         bool   settle_for_best_keep_best;
+        bool   goal_check;
     };
 
     struct Node {

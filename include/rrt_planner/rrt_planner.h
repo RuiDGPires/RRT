@@ -32,6 +32,12 @@ namespace rrt_planner {
             double *sampleRandomPoint();
 
             /**
+             * @brief Sample Goal
+             * @return 2D random planar position (x, y)
+             */
+            bool sampleGoal(double *);
+
+            /**
              * @brief Get the index of the nearest node around the new random point
              * @param point Random pointed sampled
              * @return The nearest node index

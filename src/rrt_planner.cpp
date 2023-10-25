@@ -79,6 +79,11 @@ namespace rrt_planner {
                     this->reached_goal = true;
                     this->tries = 0;
                     return true;
+                } else if (sampleGoal(p_new)) {
+                    this->path_found = true;
+                    this->reached_goal = true;
+                    this->tries = 0;
+                    return true;
                 } else if (dist_to_goal <= this->best_node_dist_sqrd && params_.settle_for_best) {
                     this->best_node_dist_sqrd = dist_to_goal;
                     this->best_node = nodes_.size() - 1;
@@ -148,6 +153,17 @@ namespace rrt_planner {
         rand_point_[1] = random_double_y.generate() * (1 - this->current_goal_bias) + this->current_goal_bias * goal_[1];
 
         return rand_point_;
+    }
+
+    bool RRTPlanner::sampleGoal(double *pos) {
+        if (!params_.goal_check) return false;
+
+        if (!collision_dect_.obstacleBetween(pos, goal_)) {
+            createNewNode(goal_, nodes_.size() - 1);
+            return true;
+        }
+
+        return false;
     }
 
     double* RRTPlanner::extendTree(const double* point_nearest, const double* point_rand) {
